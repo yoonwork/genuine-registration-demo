@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>정품등록 페이지 데모</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
@@ -10,12 +10,12 @@
 :root{--bg:#f6f5f3;--card:#fff;--ink:#1a1a1a;--ink-2:#5c5c5c;--ink-3:#9a9a9a;--line:#e7e4df;--brand:#2b2b2b;--accent:#b08d57;--ok:#227a4e;--ok-bg:#e7f3ec;--wait:#8a6d1f;--wait-bg:#fbf3dc;--no:#b23b2e;--no-bg:#fbe9e6;color-scheme:light}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:70px}
+body{background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:calc(110px + env(safe-area-inset-bottom))}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 [hidden]{display:none!important}
 
-.demobar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#1e1e1e;color:#ddd;font-size:12.5px;padding:8px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.demobar{position:fixed;left:0;right:0;bottom:0;z-index:50;background:#1e1e1e;color:#ddd;font-size:12.5px;padding:8px 14px calc(8px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .demobar b{background:#e9d16b;color:#111;border-radius:4px;padding:1px 7px;font-size:11.5px}
 .demobar .sp{flex:1}
 .demobar button{border:0;border-radius:7px;padding:6px 11px;font-size:12.5px;font-weight:600;background:#333;color:#fff}
@@ -57,6 +57,10 @@ h2{font-size:17px;margin:0 0 12px}
 .field label .req{color:var(--no)}
 .field input,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;outline:none}
 .field input:focus,.field select:focus{border-color:#888}
+.field input[type=date]{-webkit-appearance:none;appearance:none;display:block;min-width:0;max-width:100%;min-height:48px;text-align:left}
+.field input[type=date]::-webkit-date-and-time-value{text-align:left}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.75);display:grid;place-items:center;z-index:70;padding:16px}
+.lightbox img{max-width:100%;max-height:90vh;border-radius:8px;background:#fff}
 .field .hint{font-size:12px;color:var(--ink-3);margin-top:4px}
 .field .err{font-size:12.5px;color:var(--no);margin-top:4px}
 .upload{border:1.5px dashed #ccc;border-radius:12px;padding:16px;text-align:center;color:var(--ink-2);cursor:pointer;display:block;background:#fcfbf9}
@@ -97,7 +101,7 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
 .how li{margin:5px 0}
 .cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cmp .card{padding:14px}
-.toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:10px;font-size:13.5px;z-index:60}
+.toast{position:fixed;left:50%;bottom:calc(120px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:10px;font-size:13.5px;z-index:60}
 @media (max-width:600px){.steps{grid-template-columns:1fr 1fr 1fr}.cmp{grid-template-columns:1fr}.mall nav{display:none}.demobar .msg{display:none}}
 </style>
 </head>
@@ -136,7 +140,7 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
       <h2>로그인이 필요해요</h2>
       <p class="muted" style="margin-top:-6px">실제 쇼핑몰에서는 카페24 로그인 화면으로 이동하고, 로그인 후 이 페이지로 돌아와요.</p>
       <button class="btn block" id="demoLogin" type="button">체험용 회원으로 로그인</button>
-      <p class="small" style="text-align:center">아직 회원이 아니면 회원가입 → 자동으로 정품등록 화면으로 돌아와요.</p>
+      <p class="small" style="text-align:center">아직 회원이 아니면 회원가입 후 로그인하면 정품등록 화면으로 돌아와요.</p>
     </div>
   </section>
 
@@ -163,7 +167,7 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
       <button class="btn block" type="submit">정품등록 신청하기</button>
     </form>
     <details class="card" style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">게시판에는 이렇게 저장돼요 (나중에 데이터 옮기기용)</summary>
-      <p class="small">제목·말머리·본문 맨 위에 정해진 형식으로 저장해요. 그래서 나중에 엑셀이나 새 시스템으로 옮길 때 빠짐없이 읽어 낼 수 있어요.</p>
+      <p class="small">제목·카테고리·본문 첫 줄에 정해진 형식으로 저장해요. 그래서 나중에 엑셀이나 새 시스템으로 옮길 때 빠짐없이 읽어 낼 수 있어요.</p>
       <div class="preview" id="savePreview"></div></details>
   </section>
 
@@ -185,8 +189,8 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
       <select id="aFilter" style="padding:7px 10px;border:1px solid #d5dae2;border-radius:8px"><option value="">전체 상태</option><option>대기중</option><option>정품승인</option><option>반려</option></select>
       <button class="btn ghost sm" id="csv" type="button">엑셀(CSV) 받기</button>
     </div>
-    <div class="tw"><table><thead><tr><th>신청일</th><th>회원</th><th>구매처 · 제품</th><th>구매일 · 주문번호</th><th>증빙</th><th style="width:120px">말머리(상태)</th><th style="width:220px">답변</th><th>혜택</th></tr></thead><tbody id="aRows"></tbody></table></div>
-    <p class="small">상태와 답변을 바꾸면 고객의 '내 정품등록 내역'에 바로 보여요. 적립금·쿠폰은 공고대로 관리자가 직접 지급하고 여기서 체크해요.</p>
+    <div class="tw"><table><thead><tr><th>신청일</th><th>회원</th><th>구매처 · 제품</th><th>구매일 · 주문번호</th><th>증빙</th><th style="width:120px">카테고리(상태)</th><th style="width:220px">답변</th><th>혜택</th></tr></thead><tbody id="aRows"></tbody></table></div>
+    <p class="small">상태와 답변을 바꾸면 고객의 '내 정품등록 내역'에 바로 보여요. 이 화면은 처리 흐름을 보여 드리는 예시이고, 실제로는 카페24 게시물 관리 화면에서 카테고리(상태)를 바꾸고 댓글로 답변하며, 적립금은 '적립금 주기'로 지급해요.</p>
   </div>
 </div>
 
@@ -194,26 +198,23 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
 <section class="wrap how" id="v-how" hidden>
   <h1>카페24에 이렇게 적용해요</h1>
   <p class="muted">외부 서버나 API 없이, 카페24 기본 게시판과 회원 기능만으로 만들어요.</p>
-  <h3>1. 어떤 게시판을 바탕으로 할까</h3>
+  <h3>1. 어떤 게시판을 바탕으로 할까 — A안을 권해요</h3>
   <div class="cmp">
-    <div class="card"><b>A. 일반 게시판 + 비밀글 + 회원만 쓰기</b><ul class="small" style="color:#555"><li>디자인 자유도가 높아요</li><li>목록에 남의 글이 '비밀글'로 보일 수 있어서, 스킨에서 '내 신청 내역'만 보이게 바꿔요</li></ul></div>
-    <div class="card"><b>B. 1:1 게시판 방식</b><ul class="small" style="color:#555"><li>처음부터 본인 글만 보여서 안전해요</li><li>고객센터 1:1 문의와 섞이지 않게 게시판을 따로 나눠야 해요</li></ul></div>
+    <div class="card"><b>A. 일반 게시판 + 비밀글 + 회원만 쓰기 (추천)</b><ul class="small" style="color:#555"><li>정품등록을 고객센터 문의와 완전히 나눌 수 있고, 화면을 자유롭게 바꿀 수 있어요</li><li>안 쓰는 기본 게시판을 바꿔 쓰면 추가 비용이 없어요 (부족하면 카페24 부가서비스로 추가, 유료)</li><li>목록에 남의 글 제목이 보일 수 있어서 제목에 개인정보를 넣지 않고, '내 신청 내역'은 마이쇼핑의 내 게시글로 보여 드려요</li></ul></div>
+    <div class="card"><b>B. 기본 '1:1 맞춤상담' 게시판</b><ul class="small" style="color:#555"><li>회원 전용이고 본인 글만 보여서 안전해요</li><li>카페24에서 1:1 게시판은 하나뿐이라 고객센터 문의와 섞여요</li></ul></div>
   </div>
-  <p class="small">관리자 화면에서 두 방식의 설정 가능 범위를 첫날 확인하고, 본인 글만 보이면서 디자인을 바꿀 수 있는 쪽으로 확정해요.</p>
   <h3>2. 나중에 데이터를 빠짐없이 옮기기 위한 설계</h3>
   <ul>
-    <li><b>고를 수 있는 건 다 고르게:</b> 구매처·제품은 목록에서 고르게 해서 같은 제품이 여러 이름으로 쌓이지 않게 해요.</li>
-    <li><b>형식 고정:</b> 구매일은 2026-10-15처럼, 주문번호는 공백·하이픈을 정리해서 저장해요.</li>
-    <li><b>정해진 칸에 저장:</b> 카페24 게시판의 추가 입력 항목을 쓸 수 있으면 그 칸에 넣어요. 안 되면 본문 맨 위에 '이름=값' 형식 한 줄로 저장해요(형식 버전 표시 포함).</li>
-    <li><b>상태는 말머리로:</b> 대기중·정품승인·반려를 말머리로 관리해서 상태별로 바로 걸러 볼 수 있어요.</li>
-    <li><b>첨부 파일 이름 규칙:</b> 주문번호_구매일로 맞춰서, 옮길 때 사진과 신청을 짝지어요.</li>
+    <li><b>목록에서 고르기:</b> 구매처·제품은 목록에서 고르게 해서 같은 제품이 여러 이름으로 쌓이지 않게 해요.</li>
+    <li><b>형식 고정:</b> 구매일은 2026-10-15 형식으로, 주문번호는 공백·하이픈을 정리해서 저장해요.</li>
+    <li><b>정해진 순서로 저장:</b> 카페24 게시판에는 항목을 따로 추가하는 칸이 없어요. 그래서 화면에서는 칸을 나누고, 저장은 본문 첫 줄에 정해진 순서로 해서 나중에 프로그램으로 그대로 읽어 옮겨요.</li>
+    <li><b>상태는 카테고리로:</b> 대기중·정품승인·반려를 게시판 카테고리로 만들어 관리자가 바꾸고 걸러 봐요. 고객 쓰기 화면에서는 '대기중'으로 고정해요.</li>
+    <li><b>답변은 공개 댓글로:</b> 비밀글에 단 공개 댓글은 작성자와 관리자만 볼 수 있어요.</li>
   </ul>
-  <h3>3. 일정 (10/27 화요일 완료)</h3>
+  <h3>3. 안전하게 작업하는 방법</h3>
   <ul>
-    <li>1일차: 게시판 생성·권한(회원 쓰기, 비밀글)·말머리 설정, 입력 항목 확정</li>
-    <li>2~3일차: 안내 페이지, 신청 폼, 내 신청 내역 화면 스킨 작업 (PC·모바일)</li>
-    <li>4일차: QR 링크 연결, 로그인 후 돌아오기, 실제 신청·승인 테스트</li>
-    <li>5일차: 수정 반영, 운영 가이드(항목 수정·상태 변경·혜택 지급) 전달</li>
+    <li>현재 디자인을 복사해서 복사본에서만 작업하고, 표시하지 않는 게시판으로 시험한 뒤 확인받고 적용해요.</li>
+    <li>작업용 접속은 게시판·디자인 권한만 준 부운영자 계정으로 해요. 납품 후 지우시면 돼요.</li>
   </ul>
 </section>
 
@@ -230,6 +231,8 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
   function addDays(d, n){ var x = new Date(d); x.setDate(x.getDate() + n); return x; }
   function parse(s){ var p = s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); }
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function safeImg(u){ return /^data:image\/(jpeg|png|svg\+xml)[;,]/.test(String(u)) ? u : ''; }
+  function prodName(c){ return PRODS[c] || '알 수 없는 제품'; }
   function toast(m){ var t = document.getElementById('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function(){ t.hidden = true; }, 2000); }
   var today = new Date(); today.setHours(0,0,0,0);
 
@@ -247,8 +250,8 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
   var db = (function(){ try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.posts)) return s; } catch(e){} return seed(); })();
   function save(){ try { localStorage.setItem(KEY, JSON.stringify(db)); return true; } catch(e){ return false; } }
 
-  function normOrder(s){ return String(s).trim().replace(/[\s-]/g, '').toUpperCase(); }
-  function titleOf(p){ return '[정품등록] ' + PRODS[p.prod] + ' / ' + normOrder(p.order); }
+  function normOrder(s){ return String(s).trim().replace(/[\s\-\u2010-\u2015\uFF0D]/g, '').toUpperCase(); }
+  function titleOf(p){ return '[정품등록] ' + prodName(p.prod); }
   function bodyLine(p){ return '[GENUINE v1] 구매처=' + p.shop + ' | 제품=' + p.prod + ' | 구매일=' + p.date + ' | 주문번호=' + normOrder(p.order); }
   function fileName(p){ return normOrder(p.order) + '_' + p.date.replace(/-/g, '') + '.jpg'; }
 
@@ -265,7 +268,7 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
     renderMem();
     window.scrollTo(0, 0);
   }
-  document.querySelectorAll('[data-go]').forEach(function(b){ b.onclick = function(){ if (b.dataset.go === 'mine' && !db.me){ show('landing'); document.getElementById('loginBox').hidden = false; pendingAfterLogin = 'mine'; return; } show(b.dataset.go); }; });
+  document.querySelectorAll('[data-go]').forEach(function(b){ b.onclick = function(){ if (b.dataset.go === 'mine' && !db.me){ show('landing'); var lb = document.getElementById('loginBox'); lb.hidden = false; pendingAfterLogin = 'mine'; lb.scrollIntoView({behavior:'smooth', block:'center'}); return; } show(b.dataset.go); }; });
   function renderMem(){ document.getElementById('mem').textContent = db.me ? db.me + '님' : '로그인'; }
 
   var pendingAfterLogin = 'form';
@@ -274,7 +277,7 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
     pendingAfterLogin = 'form';
     var lb = document.getElementById('loginBox'); lb.hidden = false; lb.scrollIntoView({behavior:'smooth', block:'center'});
   };
-  document.getElementById('demoLogin').onclick = function(){ db.me = 'kim***'; save(); toast('로그인했어요. 정품등록 화면으로 돌아왔어요'); show(pendingAfterLogin); };
+  document.getElementById('demoLogin').onclick = function(){ db.me = 'kim***'; save(); toast('로그인했어요. 보던 화면으로 돌아왔어요'); show(pendingAfterLogin); };
   document.getElementById('newReg').onclick = function(){ show('form'); };
 
   // ---------- 폼 ----------
@@ -284,24 +287,25 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
   fShop.onchange = function(){ document.getElementById('orderHint').textContent = HINT[fShop.value] || '구매처를 먼저 골라 주세요.'; updatePreview(); };
   [fProd, fDate, fOrder].forEach(function(el){ el.addEventListener('input', updatePreview); el.addEventListener('change', updatePreview); });
   fFile.onchange = function(){
-    var f = fFile.files[0]; if (!f) return;
+    var f = fFile.files[0]; fileData = null; resetUpload(); if (!f) return;
     if (!/^image\//.test(f.type)) { setErr('fFile', '사진 파일만 올릴 수 있어요.'); return; }
     if (f.size > 10 * 1024 * 1024) { setErr('fFile', '10MB 이하 사진으로 올려 주세요.'); return; }
     var r = new FileReader();
     r.onload = function(){
       var im = new Image();
-      im.onload = function(){ var s = Math.min(1, 600 / im.width), c = document.createElement('canvas'); c.width = Math.round(im.width * s); c.height = Math.round(im.height * s); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); fileData = c.toDataURL('image/jpeg', .75); document.getElementById('upText').innerHTML = '<img src="' + fileData + '" alt="증빙 사진 미리보기">' + esc(f.name) + ' · 다시 고르려면 누르세요'; setErr('fFile', ''); updatePreview(); };
-      im.onerror = function(){ setErr('fFile', '열 수 없는 사진이에요. JPG나 PNG로 올려 주세요.'); };
+      im.onload = function(){ var s = Math.min(1, 1200 / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width * s); c.height = Math.round(im.height * s); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); fileData = c.toDataURL('image/jpeg', .75); document.getElementById('upText').innerHTML = '<img src="' + fileData + '" alt="증빙 사진 미리보기">' + esc(f.name) + ' · 다시 고르려면 누르세요'; setErr('fFile', ''); updatePreview(); };
+      im.onerror = function(){ fileData = null; resetUpload(); setErr('fFile', '열 수 없는 사진이에요. JPG나 PNG로 올려 주세요.'); };
       im.src = r.result;
     };
     r.readAsDataURL(f);
   };
+  function resetUpload(){ document.getElementById('upText').innerHTML = '영수증이나 주문 내역 화면 캡처를 올려 주세요<br><span class="small">(사진 1장, 10MB 이하)</span>'; }
   function setErr(id, m){ var e = document.querySelector('.err[data-for="' + id + '"]'); if (e) e.textContent = m; }
   function current(){ return {shop:fShop.value, prod:fProd.value, date:fDate.value, order:fOrder.value}; }
   function updatePreview(){
     var p = current();
     if (!p.shop || !p.prod || !p.date || !p.order){ document.getElementById('savePreview').textContent = '칸을 채우면 저장될 모양이 여기에 보여요.'; return; }
-    document.getElementById('savePreview').textContent = '말머리: 대기중\n제목:   ' + titleOf(p) + '\n본문 첫 줄: ' + bodyLine(p) + '\n첨부:   ' + fileName(p) + '\n공개:   비밀글 (작성자·관리자만)';
+    document.getElementById('savePreview').textContent = '상태(카테고리): 대기중\n제목:   ' + titleOf(p) + '\n본문 첫 줄: ' + bodyLine(p) + '\n첨부:   사진은 이 글에 함께 붙어 저장돼요\n공개:   비밀글 (작성자·관리자만). 주문번호는 제목에 넣지 않아요';
   }
   document.getElementById('regForm').onsubmit = function(e){
     e.preventDefault();
@@ -310,19 +314,20 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
     if (!p.shop){ setErr('fShop', '구매처를 골라 주세요.'); ok = false; }
     if (!p.prod){ setErr('fProd', '제품을 골라 주세요.'); ok = false; }
     if (!p.date){ setErr('fDate', '구매일자를 골라 주세요.'); ok = false; }
+    else if (!/^\d{4}-\d{2}-\d{2}$/.test(p.date) || isNaN(parse(p.date))){ setErr('fDate', '날짜를 2026-10-15 형식으로 골라 주세요.'); ok = false; }
     else if (p.date > ymd(today)){ setErr('fDate', '미래 날짜는 고를 수 없어요.'); ok = false; }
     else if (parse(p.date) < addDays(today, -365 * 4)){ setErr('fDate', '보증 기간(4년)이 지난 구매예요.'); ok = false; }
     var n = normOrder(p.order);
     if (!n){ setErr('fOrder', '주문번호를 입력해 주세요.'); ok = false; }
     else if (p.shop === 'naver' && !/^\d{16}$/.test(n)){ setErr('fOrder', '네이버 주문번호는 숫자 16자리예요.'); ok = false; }
-    else if (p.shop !== 'offline' && db.posts.some(function(x){ return normOrder(x.order) === n && x.status !== '반려'; })){ setErr('fOrder', '이미 등록된 주문번호예요. 내 신청 내역을 확인해 주세요.'); ok = false; }
+    else if (db.posts.some(function(x){ return x.member === db.me && x.shop === p.shop && normOrder(x.order) === n && x.status !== '반려'; })){ setErr('fOrder', '이미 신청하신 주문번호예요. 내 신청 내역을 확인해 주세요.'); ok = false; }
     if (!fileData){ setErr('fFile', '구매 증빙 사진을 올려 주세요.'); ok = false; }
     if (!fAgree.checked){ setErr('fAgree', '수집·이용에 동의해 주세요.'); ok = false; }
     if (!ok){ var first = document.querySelector('.err:not(:empty)'); if (first) first.scrollIntoView({behavior:'smooth', block:'center'}); return; }
     var post = {id:Date.now(), member:db.me, mine:true, at:ymd(today), shop:p.shop, prod:p.prod, date:p.date, order:n, img:fileData, status:'대기중', reply:'', paid:false};
     db.posts.unshift(post);
     if (!save()){ db.posts.shift(); toast('데모 저장 공간이 꽉 찼어요. 더 작은 사진으로 해 주세요'); return; }
-    e.target.reset(); fileData = null; document.getElementById('upText').innerHTML = '영수증이나 주문 내역 화면 캡처를 올려 주세요<br><span class="small">(사진 1장, 10MB 이하)</span>';
+    e.target.reset(); fileData = null; resetUpload(); document.getElementById('orderHint').textContent = '구매처를 먼저 골라 주세요.';
     toast('신청했어요. 확인 후 승인 결과를 알려 드릴게요');
     show('mine');
   };
@@ -332,17 +337,18 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
     var start = parse(p.date), end = addDays(new Date(start.getFullYear() + 4, start.getMonth(), start.getDate()), -1);
     var total = (end - start) / 864e5, used = Math.max(0, Math.min(total, (today - start) / 864e5));
     var left = Math.round((end - today) / 864e5);
+    if (p.status === '정품승인' && left < 0) return '<div class="warranty">무상 보증 <b>' + p.date.replace(/-/g, '.') + ' ~ ' + ymd(end).replace(/-/g, '.') + '</b> · 보증 기간이 끝났어요</div>';
     if (p.status !== '정품승인') return '<div class="warranty">승인되면 보증 기간 <b>' + p.date.replace(/-/g, '.') + ' ~ ' + ymd(end).replace(/-/g, '.') + '</b>이 시작돼요.</div>';
     return '<div class="warranty">무상 보증 <b>' + p.date.replace(/-/g, '.') + ' ~ ' + ymd(end).replace(/-/g, '.') + '</b> · 남은 기간 ' + left + '일<div class="bar"><i style="width:' + Math.round(used / total * 100) + '%"></i></div></div>';
   }
-  function badge(s){ return '<span class="badge ' + (s === '정품승인' ? 'ok' : s === '반려' ? 'no' : 'wait') + '">' + s + '</span>'; }
+  function badge(s){ return '<span class="badge ' + (s === '정품승인' ? 'ok' : s === '반려' ? 'no' : 'wait') + '">' + esc(s) + '</span>'; }
   function renderMine(){
     var list = db.posts.filter(function(p){ return p.member === db.me; });
     document.getElementById('mineList').innerHTML = list.length ? list.map(function(p){
       return '<div class="post">' +
-        '<div class="top">' + badge(p.status) + '<span class="lock">🔒 비밀글</span><span class="small" style="margin-left:auto">' + p.at.replace(/-/g, '.') + ' 신청</span></div>' +
-        '<div class="tt">' + esc(PRODS[p.prod]) + '</div>' +
-        '<dl class="kv"><dt>구매처</dt><dd>' + esc(SHOPS[p.shop]) + '</dd><dt>구매일</dt><dd>' + p.date.replace(/-/g, '.') + '</dd><dt>주문번호</dt><dd>' + esc(p.order) + '</dd></dl>' +
+        '<div class="top">' + badge(p.status) + '<span class="lock">🔒 비밀글</span><span class="small" style="margin-left:auto">' + esc(p.at) + ' 신청</span></div>' +
+        '<div class="tt">' + esc(prodName(p.prod)) + '</div>' +
+        '<dl class="kv"><dt>구매처</dt><dd>' + esc(SHOPS[p.shop]) + '</dd><dt>구매일</dt><dd>' + esc(p.date) + '</dd><dt>주문번호</dt><dd>' + esc(p.order) + '</dd></dl>' +
         warrantyHTML(p) +
         (p.reply ? '<div class="reply"><b>관리자 답변</b><br>' + esc(p.reply) + '</div>' : (p.status === '대기중' ? '<div class="reply">확인 중이에요. 1~2일 안에 알려 드릴게요.</div>' : '')) +
         (p.status === '반려' ? '<button class="btn ghost sm" style="margin-top:10px" type="button" data-retry>다시 신청하기</button>' : '') +
@@ -359,26 +365,28 @@ td select,td input[type=text]{padding:6px 8px;border:1px solid #d5dae2;border-ra
     var w = db.posts.filter(function(p){ return p.status === '대기중'; }).length;
     document.getElementById('aCount').textContent = db.posts.length + '건 · 대기중 ' + w + '건';
     document.getElementById('aRows').innerHTML = list.map(function(p){
-      return '<tr data-id="' + p.id + '"><td>' + p.at + '</td><td>' + esc(p.member) + '</td><td>' + esc(SHOPS[p.shop]) + '<br><b>' + esc(PRODS[p.prod]) + '</b></td><td>' + p.date + '<br><span class="small">' + esc(p.order) + '</span></td>' +
-        '<td><a href="' + p.img + '" target="_blank" rel="noopener"><img class="thumb" src="' + p.img + '" alt="증빙"></a></td>' +
+      return '<tr data-id="' + esc(p.id) + '"><td>' + esc(p.at) + '</td><td>' + esc(p.member) + '</td><td>' + esc(SHOPS[p.shop]) + '<br><b>' + esc(prodName(p.prod)) + '</b></td><td>' + esc(p.date) + '<br><span class="small">' + esc(p.order) + '</span></td>' +
+        '<td><button type="button" data-view style="border:0;background:none;padding:0"><img class="thumb" src="' + esc(safeImg(p.img)) + '" alt="증빙 크게 보기"></button></td>' +
         '<td><select data-k="status"><option' + (p.status === '대기중' ? ' selected' : '') + '>대기중</option><option' + (p.status === '정품승인' ? ' selected' : '') + '>정품승인</option><option' + (p.status === '반려' ? ' selected' : '') + '>반려</option></select></td>' +
         '<td><input type="text" data-k="reply" value="' + esc(p.reply) + '" placeholder="고객에게 보일 답변"></td>' +
         '<td><label style="font-size:12.5px;white-space:nowrap"><input type="checkbox" data-k="paid"' + (p.paid ? ' checked' : '') + '> 지급 완료</label></td></tr>';
     }).join('') || '<tr><td colspan="8" style="text-align:center;color:#999;padding:20px">신청이 없어요</td></tr>';
+    document.querySelectorAll('#aRows [data-view]').forEach(function(b){ b.onclick = function(){ var lb = document.createElement('div'); lb.className = 'lightbox'; lb.innerHTML = '<img alt="증빙 사진">'; lb.firstChild.src = b.querySelector('img').src; lb.onclick = function(){ lb.remove(); }; document.body.appendChild(lb); }; });
     document.querySelectorAll('#aRows [data-k]').forEach(function(el){
       el.onchange = function(){
         var id = +el.closest('tr').dataset.id, p = db.posts.filter(function(x){ return x.id === id; })[0]; if (!p) return;
         if (el.dataset.k === 'paid') p.paid = el.checked; else p[el.dataset.k] = el.value;
         if (el.dataset.k === 'status' && el.value === '정품승인' && !p.reply) p.reply = '정품 확인되었습니다. 혜택이 곧 지급돼요.';
-        save(); toast('저장했어요. 고객 화면에 바로 보여요'); renderAdmin();
+        toast(save() ? '저장했어요. 고객 화면에 바로 보여요' : '저장하지 못했어요'); renderAdmin();
       };
     });
   }
   document.getElementById('csv').onclick = function(){
-    var head = ['신청일','회원','구매처','제품코드','제품명','구매일','주문번호','상태','답변','혜택 지급','첨부 파일명'];
-    var cell = function(v){ v = String(v == null ? '' : v); if (/^[=+\-@]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
-    var lines = [head].concat(db.posts.map(function(p){ return [p.at, p.member, SHOPS[p.shop], p.prod, PRODS[p.prod], p.date, normOrder(p.order), p.status, p.reply, p.paid ? 'Y' : 'N', fileName(p)]; })).map(function(r){ return r.map(cell).join(','); });
-    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\r\n')], {type:'text/csv'})); a.download = '정품등록_신청목록.csv'; a.click();
+    var head = ['신청일','회원','구매처','제품코드','제품명','구매일','주문번호','상태','답변','혜택 지급','제목'];
+    var cell = function(v){ v = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; };
+    var num = function(v){ return '"=""' + String(v).replace(/"/g, '') + '"""'; };
+    var lines = [head].concat(db.posts.map(function(p){ return [p.at, p.member, SHOPS[p.shop], p.prod, prodName(p.prod), p.date, {n:normOrder(p.order)}, p.status, p.reply, p.paid ? 'Y' : 'N', titleOf(p)]; })).map(function(r){ return r.map(function(v){ return v && v.n !== undefined ? num(v.n) : cell(v); }).join(','); });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\r\n')], {type:'text/csv'})); a.download = '정품등록_신청목록.csv'; a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
   };
 
   renderMem();
